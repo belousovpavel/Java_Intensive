@@ -97,6 +97,7 @@ public class Main {
         if(number > 0 && number < tasks.size()){
             System.out.println("Задача - " + tasks.get(number) + " удалена");
             tasks.remove(number);
+            statusTask.remove(number);
         }
     }
 
