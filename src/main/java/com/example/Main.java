@@ -65,9 +65,14 @@ public class Main {
 
     static int getIntNumber(){
         while (true){
-            int num = scanner.nextInt();
-            scanner.nextLine();
-            return num;
+            if(scanner.hasNextInt()){
+                int num = scanner.nextInt();
+                scanner.nextLine();
+                return num;
+            }else{
+                System.out.print("Ошибка. Введите число: ");
+                scanner.next();
+            }
         }
     }
 
