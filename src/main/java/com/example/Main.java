@@ -1,5 +1,6 @@
 package com.example;
 
+import java.awt.*;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -8,9 +9,8 @@ import java.util.Scanner;
 
 public class Main {
     private static final Scanner scanner = new Scanner(System.in);
-    private static final List<Task> tasks = new ArrayList<>();
-    private static int taskId = 1;
     private static final DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
+    private static final TaskHandler taskHandler = new TaskHandler();
 
 
     public static void main(String[] args) {
@@ -64,17 +64,21 @@ public class Main {
         String text = scanner.nextLine();
         LocalDate deadline = LocalDate.parse(text,dateFormatter);
 
-        Task task = new Task(taskId++,name,description,deadline);
-        tasks.add(task);
+        taskHandler.addTask(name,description,deadline);
 
     }
 
     public static void showAllTasks(){
-        if(tasks.isEmpty()){
+        if(taskHandler.isEmpty()){
             System.out.println("Нет задач");
         }else{
             System.out.println("Список задач");
             int number = 1;
+//            for (Task task : tasks) {
+//                System.out.println(number + ". " + task);
+//                number++;
+//            }
+            List<Task> tasks = taskHandler.getAllTasks();
             for (Task task : tasks) {
                 System.out.println(number + ". " + task);
                 number++;
@@ -86,22 +90,26 @@ public class Main {
     public static void deleteTask(){
         System.out.print("Введите номер для удаления: ");
         int number = getIntNumber() - 1;
-        if(number > 0 && number < tasks.size()){
-            System.out.println("Задача - " + tasks.get(number) + " удалена");
-            tasks.remove(number);
-        }
+//        if(number > 0 && number < tasks.size()){
+//            System.out.println("Задача - " + tasks.get(number) + " удалена");
+//            tasks.remove(number);
+//        }
+        System.out.println("Задача - " + taskHandler.getTask(number).getName() + " удалена");
+        taskHandler.deleteTask(number);
     }
 
     public static void markAsDone(){
         System.out.println("Введите номер задачи для отметки: ");
         int number = getIntNumber()-1;
-        Task markTask = tasks.get(number);
-        markTask.setStatus(Task.Status.DONE);
+        if(taskHandler.markAsDone(number)){
+            System.out.println("Задача отмечена как выполненная!");
+        }
     }
 
-    public static boolean isTaskListEmpty(){
-        return tasks.isEmpty();
+    private static boolean isTaskListEmpty() {
+        return taskHandler.isEmpty();
     }
+
 
     static void command(int num){
         switch (num){
