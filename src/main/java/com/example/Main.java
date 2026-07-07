@@ -14,23 +14,12 @@ public class Main {
 
 
     public static void main(String[] args) {
-        System.out.println(">>> Меню:");
         while(true){
-            showMenu();
+            TaskPrinter.printMenu();
             int num = getIntNumber();
             command(num);
         }
     }
-
-    public static void showMenu(){
-        System.out.println("1. Добавить задачу\n" +
-                "2. Показать все задачи\n" +
-                "3. Удалить задачу (по номеру)\n" +
-                "4. Отметить задачу как выполненную\n" +
-                "0. Выход");
-    }
-
-
 
     public static int getIntNumber(){
         while (true){
@@ -46,7 +35,7 @@ public class Main {
     }
 
     static void addTask(){
-        System.out.print("Введите название задачи: ");
+        TaskPrinter.printEnterTaskName();
         String name;
         while(true){
             name = scanner.nextLine();
@@ -66,25 +55,18 @@ public class Main {
 
         taskHandler.addTask(name,description,deadline);
 
+        TaskPrinter.printTaskAdded();
+
     }
 
-    public static void showAllTasks(){
-        if(taskHandler.isEmpty()){
+    public static void showAllTasks() {
+        if (taskHandler.isEmpty()) {
             System.out.println("Нет задач");
-        }else{
-            System.out.println("Список задач");
-            int number = 1;
-//            for (Task task : tasks) {
-//                System.out.println(number + ". " + task);
-//                number++;
-//            }
-            List<Task> tasks = taskHandler.getAllTasks();
-            for (Task task : tasks) {
-                System.out.println(number + ". " + task);
-                number++;
-            }
+        } else {
+            TaskPrinter.printAllTasks(taskHandler.getAllTasks());
+
+            System.out.println("___________");
         }
-        System.out.println("___________");
     }
 
     public static void deleteTask(){
@@ -94,7 +76,8 @@ public class Main {
 //            System.out.println("Задача - " + tasks.get(number) + " удалена");
 //            tasks.remove(number);
 //        }
-        System.out.println("Задача - " + taskHandler.getTask(number).getName() + " удалена");
+        Task taskToDelete = taskHandler.getTask(number);
+        TaskPrinter.printTaskDeleted(taskToDelete);
         taskHandler.deleteTask(number);
     }
 
