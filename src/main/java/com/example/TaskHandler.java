@@ -1,54 +1,19 @@
 package com.example;
 
-import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.List;
 
-public class TaskHandler {
+public interface TaskHandler {
 
-    private List<Task> tasks;
-    private int taskId;
+    void addTask(String name, String description, java.time.LocalDate deadline);
 
-    public TaskHandler() {
-        this.tasks = new ArrayList<>();
-        this.taskId = 1;
-    }
+    void deleteTask(int index);
 
-    public void addTask(String name, String description, LocalDate deadline){
-        Task task = new Task(taskId++, name, description,deadline);
-        tasks.add(task);
-    }
+    boolean markAsDone(int index);
 
-    public void deleteTask(int number) {
-        tasks.remove(number);
-    }
+    Task getTask(int index);
 
-    public Task getTask(int index) {
-        if (index < 0 || index >= tasks.size()) {
-            return null;
-        }
-        return tasks.get(index);
-    }
+    List<Task> getAllTasks();
 
-    public boolean markAsDone(int index) {
-        Task task = tasks.get(index);
-        if (task.getStatus() == Task.Status.DONE) {
-            return false;
-        }
-        task.setStatus(Task.Status.DONE);
-        return true;
-    }
+    boolean isEmpty();
 
-    public List<Task> getAllTasks() {
-        return new ArrayList<>(tasks);
-    }
-
-    public int getTaskCount() {
-        return tasks.size();
-    }
-
-    public boolean isEmpty() {
-        return tasks.isEmpty();
-    }
 }
-

@@ -1,16 +1,12 @@
 package com.example;
 
-import java.awt.*;
-import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Scanner;
 
 public class Main {
     private static final Scanner scanner = new Scanner(System.in);
     private static final DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
-    private static final TaskHandler taskHandler = new TaskHandler();
+    private static final TaskHandlerImpl taskHandler = new TaskHandlerImpl();
 
 
     public static void main(String[] args) {

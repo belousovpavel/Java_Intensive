@@ -6,12 +6,12 @@ import java.util.Scanner;
 
 public class TaskManager {
     private final Scanner scanner;
-    private final TaskHandler taskHandler;
+    private final TaskHandlerImpl taskHandler;
     private final DateTimeFormatter dateFormatter;
 
     public TaskManager() {
         this.scanner = new Scanner(System.in);
-        this.taskHandler = new TaskHandler();
+        this.taskHandler = new TaskHandlerImpl();
         this.dateFormatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
     }
 
