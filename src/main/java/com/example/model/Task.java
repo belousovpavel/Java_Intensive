@@ -1,8 +1,7 @@
-package com.example;
+package com.example.model;
 
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 
 public class Task {
 
@@ -60,27 +59,6 @@ public class Task {
 
     public void setStatus(Status status) {
         this.status = status;
-    }
-
-    public enum Priority{
-        LOW,
-        MIDDLE,
-        HIGH
-    }
-
-    public enum Status {
-        TO_DO("[ ]"),
-        DONE("[X]");
-
-        private final String symbol;
-
-        Status(String symbol) {
-            this.symbol = symbol;
-        }
-
-        public String getSymbol() {
-            return symbol;
-        }
     }
 
 

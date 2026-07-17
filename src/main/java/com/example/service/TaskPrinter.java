@@ -1,4 +1,6 @@
-package com.example;
+package com.example.service;
+
+import com.example.model.Task;
 
 import java.util.List;
 
@@ -6,6 +8,13 @@ public final class TaskPrinter {
 
     private TaskPrinter() {
         throw new UnsupportedOperationException("Это утилитный класс, нельзя создавать экземпляры");
+    }
+
+    public static void printSelectionMenu(){
+        System.out.println("Выберите способ хранения данных:");
+        System.out.println("1. В памяти (данные не сохраняются)");
+        System.out.println("2. В базе данных PostgreSQL");
+        System.out.print("Ваш выбор (1 или 2): ");
     }
 
     public static void printMenu(){

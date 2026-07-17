@@ -1,4 +1,6 @@
-package com.example;
+package com.example.service;
+
+import com.example.model.Task;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -6,12 +8,12 @@ import java.util.Scanner;
 
 public class TaskManager {
     private final Scanner scanner;
-    private final TaskHandlerImpl taskHandler;
+    private final TaskHandler taskHandler;
     private final DateTimeFormatter dateFormatter;
 
-    public TaskManager() {
-        this.scanner = new Scanner(System.in);
-        this.taskHandler = new TaskHandlerImpl();
+    public TaskManager(Scanner scanner, TaskHandler taskHandler) {
+        this.scanner = scanner;
+        this.taskHandler = taskHandler;
         this.dateFormatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
     }
 
@@ -35,6 +37,7 @@ public class TaskManager {
             }
         }
     }
+
     private void addTask(){
         TaskPrinter.printEnterTaskName();
         String name;
@@ -73,10 +76,6 @@ public class TaskManager {
     private void deleteTask(){
         System.out.print("Введите номер для удаления: ");
         int number = getIntNumber() - 1;
-//        if(number > 0 && number < tasks.size()){
-//            System.out.println("Задача - " + tasks.get(number) + " удалена");
-//            tasks.remove(number);
-//        }
         Task taskToDelete = taskHandler.getTask(number);
         TaskPrinter.printTaskDeleted(taskToDelete);
         taskHandler.deleteTask(number);

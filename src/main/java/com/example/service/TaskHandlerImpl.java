@@ -1,13 +1,16 @@
-package com.example;
+package com.example.service;
+
+import com.example.model.Status;
+import com.example.model.Task;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
-public class TaskHandlerImpl implements TaskHandler{
+public class TaskHandlerImpl implements TaskHandler {
 
     private List<Task> tasks;
-    private int taskId;
+    private volatile int taskId;
 
     public TaskHandlerImpl() {
         this.tasks = new ArrayList<>();
@@ -36,10 +39,10 @@ public class TaskHandlerImpl implements TaskHandler{
     @Override
     public boolean markAsDone(int index) {
         Task task = tasks.get(index);
-        if (task.getStatus() == Task.Status.DONE) {
+        if (task.getStatus() == Status.DONE) {
             return false;
         }
-        task.setStatus(Task.Status.DONE);
+        task.setStatus(Status.DONE);
         return true;
     }
 
