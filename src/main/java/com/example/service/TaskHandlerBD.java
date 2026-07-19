@@ -13,10 +13,8 @@ import java.util.List;
 
 public class TaskHandlerBD implements TaskHandler{
 
-    private final List<Task> tasks;
 
     public TaskHandlerBD() {
-        this.tasks = new ArrayList<>();
         createSchema();
         createTable();
     }
@@ -48,6 +46,19 @@ public class TaskHandlerBD implements TaskHandler{
         }
     }
 
+    private int getTaskId(int index) throws SQLException{
+        String sql = "SELECT id FROM task.tasks ORDER BY id LIMIT 1 OFFSET ?";
+        try(Connection connection = ConnectionBD.getConnection()){
+            PreparedStatement statement = connection.prepareStatement(sql);
+            statement.setInt(1,index);
+            ResultSet result = statement.executeQuery();
+            if (result.next()) {
+                return result.getInt("id");
+            }
+            throw new SQLException("Задача не найдена по индексу: " + index);
+        }
+    }
+
     @Override
     public void addTask(String name, String description, LocalDate deadline) {
         String insertToBD = "INSERT INTO task.tasks (name, description, deadline, priority, status) VALUES (?,?,?,?,?);";
@@ -57,22 +68,8 @@ public class TaskHandlerBD implements TaskHandler{
             statement.setString(2,description);
             statement.setDate(3, Date.valueOf(deadline));
             statement.setString(4, Priority.LOW.name());
-            statement.setString(5, Status.TO_DO.getSymbol());
+            statement.setString(5, Status.TO_DO.name());
             statement.executeUpdate();
-
-            ResultSet generateId = statement.getGeneratedKeys();
-
-            if(generateId.next()){
-                int newId = generateId.getInt(1);
-
-                Task task = new Task(newId,name,description,deadline);
-                task.setPriority(Priority.LOW);
-                task.setStatus(Status.TO_DO);
-
-                tasks.add(task);
-
-                System.out.println("Задача добавлена!");
-            }
 
         } catch (SQLException e) {
             throw new RuntimeException(e);
@@ -80,12 +77,51 @@ public class TaskHandlerBD implements TaskHandler{
     }
 
     @Override
-    public void deleteTask(int index) {
+    public void deleteTask(int index) throws SQLException {
 
+        int taskId = getTaskId(index);
+
+        String deleteTask = "DELETE FROM task.tasks WHERE id = ?";
+
+        try(Connection connection = ConnectionBD.getConnection()) {
+            PreparedStatement statement = connection.prepareStatement(deleteTask);
+            statement.setInt(1,taskId);
+            statement.executeUpdate();
+
+            System.out.println("Задача удалена");
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Override
     public boolean markAsDone(int index) {
+        try {
+            int number = getTaskId(index);
+            String getStatus = "SELECT status FROM task.tasks WHERE id = ?";
+            try(Connection connection = ConnectionBD.getConnection()){
+                PreparedStatement statement = connection.prepareStatement(getStatus);
+                statement.setInt(1,number);
+                ResultSet result = statement.executeQuery();
+                if(result.next()){
+                    String status = result.getString("status");
+                    if(status.equals(Status.DONE.name())){
+                        return false;
+                    }
+                }
+            }
+
+            String updateStatus = "UPDATE task.tasks SET status = ? WHERE id = ?";
+            try(Connection connection = ConnectionBD.getConnection()){
+                PreparedStatement statement = connection.prepareStatement(updateStatus);
+                statement.setString(1,Status.DONE.name());
+                statement.setInt(2,number);
+                statement.executeUpdate();
+            }
+
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
         return false;
     }
 
@@ -96,7 +132,39 @@ public class TaskHandlerBD implements TaskHandler{
 
     @Override
     public List<Task> getAllTasks() {
-        return List.of();
+        List<Task> tasks = new ArrayList<>();
+        String getAllTasks = "SELECT * FROM task.tasks ORDER BY id";
+        try(Connection connection = ConnectionBD.getConnection()){
+            PreparedStatement statement = connection.prepareStatement(getAllTasks);
+            ResultSet result = statement.executeQuery();
+            while(result.next()){
+                int id = result.getInt("id");
+                String name = result.getString("name");
+                String description = result.getString("description");
+                LocalDate deadline = result.getDate("deadline").toLocalDate();
+                String priority = result.getString("priority");
+                String status = result.getString("status");
+
+                Task task = new Task(id,name,description,deadline);
+                try {
+                    task.setPriority(Priority.valueOf(priority));
+                } catch (IllegalArgumentException | NullPointerException e) {
+                    task.setPriority(Priority.LOW);
+                }
+
+                try {
+                    task.setStatus(Status.valueOf(status));
+                } catch (IllegalArgumentException | NullPointerException e) {
+                    task.setStatus(Status.TO_DO);
+                }
+
+                tasks.add(task);
+
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        return tasks;
     }
 
     @Override

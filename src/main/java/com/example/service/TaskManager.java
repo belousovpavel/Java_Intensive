@@ -2,6 +2,7 @@ package com.example.service;
 
 import com.example.model.Task;
 
+import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.Scanner;
@@ -17,7 +18,7 @@ public class TaskManager {
         this.dateFormatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
     }
 
-    public void start() {
+    public void start() throws SQLException {
         while (true) {
             TaskPrinter.printMenu();
             int choice = getIntNumber();
@@ -73,7 +74,7 @@ public class TaskManager {
         }
     }
 
-    private void deleteTask(){
+    private void deleteTask() throws SQLException {
         System.out.print("Введите номер для удаления: ");
         int number = getIntNumber() - 1;
         Task taskToDelete = taskHandler.getTask(number);
@@ -94,7 +95,7 @@ public class TaskManager {
     }
 
 
-    private void command(int num){
+    private void command(int num) throws SQLException {
         switch (num){
             case 0:
                 System.out.println("Выход из программы!");
