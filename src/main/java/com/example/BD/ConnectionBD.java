@@ -21,6 +21,4 @@ public class ConnectionBD {
         return connect;
     }
 
-
-
 }
